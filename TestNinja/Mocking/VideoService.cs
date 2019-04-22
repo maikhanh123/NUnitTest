@@ -20,6 +20,7 @@ namespace TestNinja.Mocking
         
         public string ReadVideoTitle()
         {
+            //var str = File.ReadAllText("video.txt"); //this code will move and Isolate to FileReader.cs, later use interface to inject dp
             var str = _fileReader.Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
