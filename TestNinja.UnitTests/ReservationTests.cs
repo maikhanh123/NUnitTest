@@ -17,6 +17,9 @@ namespace TestNinja.UnitTests
 
             // Assert
             Assert.That(result, Is.True);
+            //Assert.IsTrue(result);
+            //Assert.That(result == true);
+            
         }
 
         [Test]
