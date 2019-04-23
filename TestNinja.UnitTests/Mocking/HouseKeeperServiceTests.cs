@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Moq;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
-using NUnit.Framework;
 using TestNinja.Mocking;
 
 namespace TestNinja.UnitTests.Mocking
@@ -48,6 +48,24 @@ namespace TestNinja.UnitTests.Mocking
         [Test]
         public void SendStatementEmails_WhenCalled_GenerateStatements()
         {
+            //_houseKeeper = new Housekeeper { Email = "a", FullName = "b", Oid = 1, StatementEmailBody = "c" };
+
+            //var unitOfWork = new Mock<IUnitOfWork>();
+
+            //unitOfWork.Setup(uow => uow.Query<Housekeeper>()).Returns(new List<Housekeeper>
+            //{
+            //    _houseKeeper
+            //}.AsQueryable());
+
+            //_emailSender = new Mock<IEmailSender>();
+            //_messageBox = new Mock<IXtraMessageBox>();
+
+            //_service = new HouseKeeperService(
+            //    unitOfWork.Object,
+            //    _statementGenerator.Object,
+            //    _emailSender.Object,
+            //    _messageBox.Object);
+
             _service.SendStatementEmails(_statementDate);
             
             _statementGenerator.Verify(sg => 
