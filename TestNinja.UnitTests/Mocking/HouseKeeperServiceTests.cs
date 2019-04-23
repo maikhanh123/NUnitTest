@@ -31,10 +31,10 @@ namespace TestNinja.UnitTests.Mocking
 
             _statementFileName = "fileName"; 
             _statementGenerator = new Mock<IStatementGenerator>();
-            _statementGenerator
-                .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
-                .Returns(() => _statementFileName);
-            
+            //_statementGenerator
+            //    .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
+            //    .Returns(() => _statementFileName);
+
             _emailSender = new Mock<IEmailSender>();
             _messageBox = new Mock<IXtraMessageBox>();
             
@@ -81,7 +81,7 @@ namespace TestNinja.UnitTests.Mocking
             
             _statementGenerator.Verify(sg => 
                 sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)),
-                Times.Never);
+                Times.Never); //that mean this method is never be call (because the email is null)
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace TestNinja.UnitTests.Mocking
             
             _statementGenerator.Verify(sg => 
                 sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)),
-                Times.Never);
+                Times.Never); 
         }
 
         [Test]
@@ -111,19 +111,41 @@ namespace TestNinja.UnitTests.Mocking
         [Test]
         public void SendStatementEmails_WhenCalled_EmailTheStatement()
         {
+            _statementGenerator
+                .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
+                .Returns(() => _statementFileName);
+
             _service.SendStatementEmails(_statementDate);
-            
-            VerifyEmailSent();
+
+            _emailSender.Verify(es => es.EmailFile(
+                _houseKeeper.Email,
+                _houseKeeper.StatementEmailBody,
+                _statementFileName,
+                It.IsAny<string>()));
+            // It.IsAny<string>() mean no need to show exactly string
+
+            //VerifyEmailSent();
         }
 
         [Test]
         public void SendStatementEmails_StatementFileNameIsNull_ShouldNotEmailTheStatement()
         {
             _statementFileName = null;
-            
+
+            _statementGenerator
+                .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
+                .Returns(() => _statementFileName);
+
             _service.SendStatementEmails(_statementDate);
-            
-            VerifyEmailNotSent();
+
+            _emailSender.Verify(es => es.EmailFile(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Never);
+
+            //VerifyEmailNotSent();
         }
 
         [Test]
